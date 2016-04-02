@@ -22,7 +22,7 @@ public class Note {
         mLastModied = new Date();
     }
 
-    public Note(String titel, String content, String password) {
+    public Note(String title, String content, String password) {
         mId = NEXt_ID++;
         mTitle = title;
         mContent = content;
