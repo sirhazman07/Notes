@@ -4,19 +4,45 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!--  //ACTIVITIES ARE LISTED HERE-->
+
+        <!--Notes List-->
         <activity android:name=".NotesList">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddNote" />
-        <activity android:name=".EditNote"></activity>
+
+        <!--Edit Note-->
+        <activity
+            android:name=".EditNote"
+            android:label="Notes List"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".NotesList">
+            </meta-data>
+        </activity>
+
+        <!--Add Note-->
+        <activity
+            android:name=".AddNote"
+            android:label="Notes List"
+            android:windowSoftInputMode="adjustResize" />
+        <!--window windowSoftInputMode adjust=resize fixes the keyboard covering the note content-->
+
+        <!--//meta-data is used to create the return narrow in the left top corner of your activity-->
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".NotesList" />
+
+
     </application>
 
 </manifest>
