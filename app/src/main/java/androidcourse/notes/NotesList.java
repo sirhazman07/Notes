@@ -37,14 +37,30 @@ public class NotesList extends AppCompatActivity {
         });
         //Listener for add NoteImage
         ImageView addNoteImg = (ImageView) findViewById(R.id.addNoteImg);
-        addNoteImg.setOnClickListener(new View.OnClickListener(){
+        addNoteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //create an intent
                 Intent addNoteIntent = new Intent(getBaseContext(), AddNote.class);
-                startActivityForResult(addNoteIntent,ADD_NOTE_REQUEST);
+                startActivityForResult(addNoteIntent, ADD_NOTE_REQUEST);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ADD_NOTE_REQUEST:
+                if (resultCode == RESULT_OK) {
+            //get the new note from the intent
+                    Note newNote = (Note) data.getSerializableExtra("note");
+                    notes.add(newNote);
+            //notify the adapter and
+            // update the listView adapter with the new Note
+                    adapter.notifyDataSetChanged();
+                }
+                break;
+        }
     }
 }
 

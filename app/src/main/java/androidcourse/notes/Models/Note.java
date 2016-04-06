@@ -1,12 +1,13 @@
 package androidcourse.notes.Models;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat; // adds Simple Date Format "Package" (Package in Java, Namespace in C#)
 import java.util.Date;
 
 /**
  * Created by Harold on 24/03/2016.
  */
-public class Note {
+public class Note implements Serializable {
     private int mId;
     private String mTitle;
     private String mContent;

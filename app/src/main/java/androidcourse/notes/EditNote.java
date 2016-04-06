@@ -18,4 +18,6 @@ public class EditNote extends AppCompatActivity {
         inflater.inflate(R.menu.edit_note_menu, menu);
         return true;
     }
+
+
 }
