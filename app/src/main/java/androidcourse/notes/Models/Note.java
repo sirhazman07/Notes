@@ -15,7 +15,7 @@ public class Note implements Serializable {
     private String mPassword;
     private static int NEXt_ID = 1;
 
-
+    //Contructor for notes without a Password
     public Note(String title, String content) {
         mId = NEXt_ID++;
         mTitle = title;
@@ -23,6 +23,7 @@ public class Note implements Serializable {
         mLastModied = new Date();
     }
 
+    //Contructor for notes with a Password
     public Note(String title, String content, String password) {
         mId = NEXt_ID++;
         mTitle = title;
@@ -31,6 +32,7 @@ public class Note implements Serializable {
         mLastModied = new Date();
     }
 
+    //Getter for attributes
     public int getmId() {
         return mId;
     }
@@ -54,5 +56,23 @@ public class Note implements Serializable {
     public String dateFormatted() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM dd - HH:mm");
         return "Last edited on: " + sdf.format(mLastModied);
+    }
+
+    //Setter for attributes
+
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
+    public void setmContent(String mContent) {
+        this.mContent = mContent;
+    }
+
+    public void setmLastModied(Date mLastModied) {
+        this.mLastModied = mLastModied;
+    }
+
+    public void setmPassword(String mPassword) {
+        this.mPassword = mPassword;
     }
 }
