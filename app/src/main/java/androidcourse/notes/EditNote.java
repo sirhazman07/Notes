@@ -7,51 +7,82 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-
+import java.util.Date;
 import androidcourse.notes.Models.Note;
+import io.realm.Realm;
 
 public class EditNote extends AppCompatActivity {
     private Note noteToEdit;
+    private Realm realm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_note);
+
+        realm = Realm.getDefaultInstance();
+
         //obtaining the note from main activity
+
         Intent intent = getIntent();
         if (intent.hasExtra("note to edit")) {
-            noteToEdit = (Note) intent.getSerializableExtra("note to edit");
+            int noteId = intent.getIntExtra("note to edit", 0);
+            noteToEdit = findNote(noteId);
         }
         //updating the UI with the note info
-        EditText title =  (EditText) findViewById(R.id.tittle_edit);
+        EditText title = (EditText) findViewById(R.id.title_edit);
         title.setText(noteToEdit.getmTitle());
         EditText content = (EditText) findViewById(R.id.note_info_edit);
         content.setText(noteToEdit.getmContent());
     }
 
-    //Method that overwrites the title and content for an existing note -- The SMART way
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        if (item.getItemId()==R.id.SaveNote)
-        {
-            String title =  ((EditText) findViewById(R.id.tittle_edit)).getText().toString();
-            String content= ((EditText) findViewById(R.id.note_info_edit)).getText().toString();
-            //updatin the note
-            noteToEdit.setmTitle(title);
-            noteToEdit.setmContent(content);
-            //Responding to the request from main activity
-            Intent editNote = new Intent();
-            editNote.putExtra("note", noteToEdit);
-            setResult(RESULT_OK);
-            finish();
-        }
-        return true;
-    }
-
-    public boolean OnCreateOptionsMenu(Menu menu){
+        public boolean OnCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.edit_note_menu, menu);
         return true;
     }
 
+    //Method that overwrites the title and content for an existing note -- The SMART way
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.SaveNote) {
+            String title = ((EditText) findViewById(R.id.title_edit)).getText().toString();
+            String content = ((EditText) findViewById(R.id.note_info_edit)).getText().toString();
+            //updatin the note
+            updateNote(title, content);
+        } else if (item.getItemId() == R.id.DeleteNote) {
+            deleteNote();
+        }
+        //Return to noteList activity
+        finish();
+        return true;
+    }
 
+    //find the note by id
+    private Note findNote(int id) {
+        return realm.where(Note.class).equalTo("mId", id).findFirst();
+    }
+
+
+    // update note using realm
+    private void updateNote(String title, String content) {
+        realm.beginTransaction();
+        noteToEdit.setmTitle(title);
+        noteToEdit.setmContent(content);
+        noteToEdit.setmLastModified(new Date());
+        realm.commitTransaction();
+    }
+
+    // delete note using realm
+    private void deleteNote() {
+        realm.beginTransaction();
+        noteToEdit.removeFromRealm();
+        realm.commitTransaction();
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        realm.close();
+    }
 }

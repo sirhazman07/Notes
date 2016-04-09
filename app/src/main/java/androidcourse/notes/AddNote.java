@@ -15,11 +15,14 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import io.realm.Realm;
 
 import androidcourse.notes.Models.Note;
 
 public class AddNote extends AppCompatActivity {
     private String mPassword;
+    //never forget to add realm here after adding the reference package io.realm.Realm
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,6 @@ public class AddNote extends AppCompatActivity {
                         mPassword = null;
                     }
                 });
-
                 builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         String strPassword1 = password1.getText().toString();
@@ -98,19 +100,39 @@ public class AddNote extends AppCompatActivity {
             String title = ((EditText) findViewById(R.id.title_add)).getText().toString();
             String contents = ((EditText) findViewById(R.id.title_add)).getText().toString();
             Note note;
-//check if the note has password set.
+        //check if the note has password set.
             if (mPassword == null) {
                 note = new Note(title, contents);
             } else {
                 note = new Note(title, contents, mPassword);
             }
-//return to NotesList activity
-            Intent newNote = new Intent();
-//add new note to the intent
-            newNote.putExtra("note", note);
-            setResult(RESULT_OK, newNote);
-            finish();
+            //save the note
+            saveNote(note);
         }
         return true;
+    }
+
+    private void saveNote(Note note) {
+        //set the id for the note
+        note.setmId(getNextNoteId());
+        //persist your data
+        realm.beginTransaction();
+        realm.copyToRealm(note);
+        realm.commitTransaction();
+    }
+
+    //used to generate the next note id
+    private int getNextNoteId(){
+        int id = 1;
+        if (realm.allObjects(Note.class).size() > 0)
+            id= realm.where(Note.class).max("mId").intValue() + 1;
+        return id;
+    }
+
+    //Close the connection
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        realm.close();
     }
 }

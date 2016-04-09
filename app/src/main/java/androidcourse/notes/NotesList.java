@@ -40,9 +40,6 @@ public class NotesList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes_list);
-        //setting up realm configuration
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
-        Realm.setDefaultConfiguration(realmConfiguration);
         realm = Realm.getDefaultInstance();
         final ListView notesListView = (ListView) findViewById(R.id.listView);
         adapter = new NotesAdapter(this, R.layout.note_row, getNotesList());
@@ -68,20 +65,18 @@ public class NotesList extends AppCompatActivity {
             public void onClick(View v) {
                 //create an intent
                 Intent addNoteIntent = new Intent(getBaseContext(), AddNote.class);
-                startActivityForResult(addNoteIntent, ADD_NOTE_REQUEST);
+                startActivity(addNoteIntent);
             }
         });
     }
 
-
-    //create intent for the edit noe listener
-    private void editNoteIntent(Note note) {
-        Intent editNoteIntent = new Intent(NotesList.this, EditNote.class);
-        editNoteIntent.putExtra("note to edit", note.getmId());
-        startActivity(editNoteIntent);
+    @Override
+    protected void onStart(){
+        super.onStart();
+        adapter.notifyDataSetChanged();
     }
 
-    private void displayPinPrompt(Note note) {
+    private void displayPinPrompt(final Note note) {
         View layout = getLayoutInflater().inflate(R.layout.pin_prompt_layout, null);
         final EditText password1 = (EditText) layout.findViewById(R.id.pwd1);
         final TextView error = (TextView) layout.findViewById(R.id.TextView_PwdProblem);
@@ -110,6 +105,8 @@ public class NotesList extends AppCompatActivity {
             }
         });
 
+        //set a listener for the prompt that lets you cancel from the prompt if you dont to enter a password and return to
+        //activity (cancels prompt)
         AlertDialog.Builder builder = new AlertDialog.Builder(NotesList.this);
         builder.setView(layout);
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -118,6 +115,8 @@ public class NotesList extends AppCompatActivity {
                 dialog.cancel();
             }
         });
+        //set a listener that checks if the password on the prompts match, if they do start the create
+        //note activity
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -129,7 +128,20 @@ public class NotesList extends AppCompatActivity {
         });
         AlertDialog passwordDialog = builder.create();
         passwordDialog.show();
-
     }
+
+    //create intent for the edit note listener
+    private void editNoteIntent(Note note) {
+        Intent editNoteIntent = new Intent(NotesList.this, EditNote.class);
+        editNoteIntent.putExtra("note to edit", note.getmId());
+        startActivity(editNoteIntent);
+    }
+
+    //Close realm database connection
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
 }
 
