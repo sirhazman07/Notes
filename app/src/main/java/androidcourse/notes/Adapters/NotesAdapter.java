@@ -10,13 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidcourse.notes.Models.Note;
 import androidcourse.notes.R;
 
 public class NotesAdapter extends ArrayAdapter<Note> {
     private Context mContext;
-    private ArrayList<Note> mNotelist;
+    private List<Note> mNotelist;
     private int mLayoutResourceId;
 
     private static class ViewHolder {
@@ -26,7 +27,7 @@ public class NotesAdapter extends ArrayAdapter<Note> {
         ImageView pwd;
     }
 
-    public NotesAdapter(Context context, int layoutResourceId, ArrayList<Note> notelist) {
+    public NotesAdapter(Context context, int layoutResourceId, List<Note> notelist) {
         super(context, layoutResourceId, notelist);
         mContext = context;
         mNotelist = notelist;

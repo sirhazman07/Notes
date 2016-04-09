@@ -1,64 +1,66 @@
 package androidcourse.notes.Models;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat; // adds Simple Date Format "Package" (Package in Java, Namespace in C#)
 import java.util.Date;
+
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 /**
  * Created by Harold on 24/03/2016.
  */
-public class Note implements Serializable {
+public class Note extends RealmObject {
+    //Annotations in Realm serve to declare Pks and required class attributes
+    @PrimaryKey
     private int mId;
+    @Required
     private String mTitle;
+    @Required
     private String mContent;
-    private Date mLastModied;
+    @Required
+    private Date mLastModified;
     private String mPassword;
-    private static int NEXt_ID = 1;
 
-    //Contructor for notes without a Password
+    //this is also required for Realm
+    public Note() {}
+
+    //Constructor for notes without a Password
     public Note(String title, String content) {
-        mId = NEXt_ID++;
         mTitle = title;
         mContent = content;
-        mLastModied = new Date();
+        mLastModified = new Date();
     }
-
-    //Contructor for notes with a Password
+    //Constructor for notes with a Password
     public Note(String title, String content, String password) {
-        mId = NEXt_ID++;
-        mTitle = title;
-        mContent = content;
+        //TODO: find out what this next line does
+        this(title, content);
         mPassword = password;
-        mLastModied = new Date();
+        mLastModified = new Date();
     }
 
     //Getter for attributes
     public int getmId() {
         return mId;
     }
-
     public String getmTitle() {
         return mTitle;
     }
-
     public String getmContent() {
         return mContent;
     }
-
-    public Date getmLastModied() {
-        return mLastModied;
+    public Date getmLastModifed() {
+        return mLastModified;
     }
-
     public String getmPassword() {
         return mPassword;
     }
 
-    public String dateFormatted() {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM dd - HH:mm");
-        return "Last edited on: " + sdf.format(mLastModied);
-    }
-
     //Setter for attributes
+
+    public  void setmId(int mId){
+        this.mId = mId;
+    }
 
     public void setmTitle(String mTitle) {
         this.mTitle = mTitle;
@@ -68,11 +70,17 @@ public class Note implements Serializable {
         this.mContent = mContent;
     }
 
-    public void setmLastModied(Date mLastModied) {
-        this.mLastModied = mLastModied;
+    public void setmLastModified(Date mLastModified) {
+        this.mLastModified = mLastModified;
     }
 
     public void setmPassword(String mPassword) {
         this.mPassword = mPassword;
     }
+    public String dateFormatted() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM dd - HH:mm");
+        return "Last edited on: " + sdf.format(mLastModified);
+    }
+
+
 }
