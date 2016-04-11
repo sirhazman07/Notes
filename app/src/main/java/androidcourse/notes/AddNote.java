@@ -15,6 +15,12 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import io.realm.Realm;
 
 import androidcourse.notes.Models.Note;
@@ -23,6 +29,11 @@ public class AddNote extends AppCompatActivity {
     private String mPassword;
     //never forget to add realm here after adding the reference package io.realm.Realm
     private Realm realm;
+    //action listener for the new button
+    private String currentPhotPath;
+    static final int REQUEST_TAKE_PHOTO = 1;
+    private MenuItem item;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,5 +145,22 @@ public class AddNote extends AppCompatActivity {
     protected void onDestroy(){
         super.onDestroy();
         realm.close();
+    }
+
+    private File createImageFile () throws IOException{
+        //create an image FIle name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        //getExternalFilesDir makes photos to remain private to your app only
+        File storageDir = getExternalFilesDir(null);
+        File image = File.createTempFile(
+                imageFileName, /* [prefix */
+                "jpg",          /* sufix  */
+                storageDir      /* directory */
+        );
+
+        // Save the file: path for use with ACTION_VIEW intents
+        currentPhotPath = image.getAbsolutePath();
+        return image;
     }
 }
