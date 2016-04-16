@@ -25,6 +25,7 @@ public class NotesAdapter extends ArrayAdapter<Note> {
         TextView date;
         ImageView img;
         ImageView pwd;
+        ImageView attach;
     }
 
     public NotesAdapter(Context context, int layoutResourceId, List<Note> notelist) {
@@ -59,19 +60,39 @@ public class NotesAdapter extends ArrayAdapter<Note> {
             viewHolder.date = (TextView) rowView.findViewById(R.id.lastModified);
             viewHolder.img = (ImageView) rowView.findViewById(R.id.icon);
             viewHolder.pwd = (ImageView) rowView.findViewById(R.id.pwdImg);
+            viewHolder.attach = (ImageView) rowView.findViewById(R.id.attachment);
             rowView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) rowView.getTag();
         }
         //fill data
 
-            viewHolder.title.setText(mNotelist.get(position).getmTitle());
-            viewHolder.date.setText(mNotelist.get(position).dateFormatted());
+        viewHolder.title.setText(mNotelist.get(position).getmTitle());
+        viewHolder.date.setText(mNotelist.get(position).dateFormatted());
+
+        boolean hasPassword = mNotelist.get(position).getmPassword() != null;
+        boolean hasAttachament = mNotelist.get(position).getPhotoPath() != null;
+
+        if (hasPassword && hasAttachament) {
+            viewHolder.pwd.setImageResource(R.drawable.password);
+            viewHolder.attach.setImageResource(R.drawable.image_attachment);
+        } else if (hasPassword) {
+            viewHolder.pwd.setImageResource(R.drawable.password);
+        } else if (hasAttachament) {
+            viewHolder.pwd.setImageResource(R.drawable.image_attachment);
+            viewHolder.attach.setImageDrawable(null);
+        } else {
+            viewHolder.attach.setImageDrawable(null);
+            viewHolder.pwd.setImageDrawable(null);
+        }
+        return rowView;
+    }
+        /*
             if (mNotelist.get(position).getmPassword() != null) {
                 viewHolder.pwd.setImageResource(R.drawable.password);
             } else {
                 viewHolder.pwd.setImageDrawable(null);
             }
             return rowView;
-        }
+        }*/
     }

@@ -3,6 +3,8 @@ package androidcourse.notes;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +33,7 @@ public class AddNote extends AppCompatActivity {
     //never forget to add realm here after adding the reference package io.realm.Realm
     private Realm realm;
     //action listener for the new button
-    private String currentPhotPath;
+    private String currentPhotoPath;
     static final int REQUEST_TAKE_PHOTO = 1;
     private MenuItem item;
 
@@ -78,7 +81,7 @@ public class AddNote extends AppCompatActivity {
                 builder.setView(layout);
                 builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                    //if password prompt is cancelled disable checkbox
+                        //if password prompt is cancelled disable checkbox
                         password.setChecked(false);
                         mPassword = null;
                     }
@@ -99,6 +102,14 @@ public class AddNote extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data){
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK){
+            //disable camera icon
+            item.setVisible(false);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.add_note_menu, menu);
@@ -111,15 +122,40 @@ public class AddNote extends AppCompatActivity {
             String title = ((EditText) findViewById(R.id.title_add)).getText().toString();
             String contents = ((EditText) findViewById(R.id.title_add)).getText().toString();
             Note note;
-        //check if the note has password set.
+            //check if the note has password set.
             if (mPassword == null) {
                 note = new Note(title, contents);
             } else {
                 note = new Note(title, contents, mPassword);
             }
+            if (currentPhotoPath != null){
+                note.setPhotoPath(currentPhotoPath);
+            }
             //save the note
             saveNote(note);
+            finish();
         }
+        else if (item.getItemId() == R.id.image){
+            Intent takePictureIntent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
+            //Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                //Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex){
+                    //Error occurred while creating the File
+                    Toast.makeText(AddNote.this, "Error occurred while creating the File",
+                            Toast.LENGTH_SHORT).show();
+                }
+                //Continue only if the File was successfully created
+                if (photoFile != null){
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                            Uri.fromFile(photoFile));
+                    startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                }
+            }
+    }
         return true;
     }
 
@@ -160,7 +196,8 @@ public class AddNote extends AppCompatActivity {
         );
 
         // Save the file: path for use with ACTION_VIEW intents
-        currentPhotPath = image.getAbsolutePath();
+        currentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
 }

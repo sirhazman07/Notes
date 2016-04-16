@@ -21,6 +21,7 @@ public class Note extends RealmObject {
     @Required
     private Date mLastModified;
     private String mPassword;
+    private String photoPath;
 
     //this is also required for Realm
     public Note() {}
@@ -39,9 +40,18 @@ public class Note extends RealmObject {
         mLastModified = new Date();
     }
 
-    //Getter for attributes
+    //Getter and Setter for attributes
+    public String getPhotoPath(){
+        return photoPath;
+    }
+    public void setPhotoPath(String photoPath){
+        this.photoPath = photoPath;
+    }
     public int getmId() {
         return mId;
+    }
+    public  void setmId(int mId){
+        this.mId = mId;
     }
     public String getmTitle() {
         return mTitle;
@@ -49,31 +59,22 @@ public class Note extends RealmObject {
     public String getmContent() {
         return mContent;
     }
-    public Date getmLastModifed() {
+    public Date getmLastModified() {
         return mLastModified;
     }
     public String getmPassword() {
         return mPassword;
     }
-
-    //Setter for attributes
-
-    public  void setmId(int mId){
-        this.mId = mId;
-    }
-
     public void setmTitle(String mTitle) {
+
         this.mTitle = mTitle;
     }
-
     public void setmContent(String mContent) {
         this.mContent = mContent;
     }
-
     public void setmLastModified(Date mLastModified) {
         this.mLastModified = mLastModified;
     }
-
     public void setmPassword(String mPassword) {
         this.mPassword = mPassword;
     }

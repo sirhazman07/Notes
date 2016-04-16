@@ -26,7 +26,7 @@ import io.realm.Sort;
 public class NotesList extends AppCompatActivity {
     //After we set-up the on clickListener for the ImageView we give it an Intent an alse need to
     // Serialize each intent (label it) through the ADD_NOTE_REQUEST which is an int initialized with 1
-    //Think of it as an Itent signature, because you may may multiple intents for the same Click event OK.
+    //Think of it as an Intent signature, because you may may multiple intents for the same Click event OK.
     //When we use realm we also need to remove all request because we are not required to start and activity for result
     //ALSO NOTE we use a list not an array list for item using realm
     private NotesAdapter adapter;
@@ -39,8 +39,8 @@ public class NotesList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notes_list);
         realm = Realm.getDefaultInstance();
+        setContentView(R.layout.activity_notes_list);
         final ListView notesListView = (ListView) findViewById(R.id.listView);
         adapter = new NotesAdapter(this, R.layout.note_row, getNotesList());
         notesListView.setAdapter(adapter);
@@ -94,7 +94,7 @@ public class NotesList extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String strPass1 = password1.getText().toString();
-                //validate if pasword is correct
+                //validate if password is correct
                 if (!strPass1.equals(note.getmPassword())) {
                     error.setText("Invalid Password");
                     error.setTextColor(Color.RED);

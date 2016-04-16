@@ -28,7 +28,14 @@
         android:text="Note Title"
         android:textColor="#030303"
         android:textSize="18sp" />
-
+    <ImageView
+        android:id="@+id/attachment"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_alignBottom="@+id/title"
+        android:layout_toLeftOf="@+id/pwdImg"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/image_attachment"/>
     <ImageView
         android:id="@+id/pwdImg"
         android:layout_width="18dp"
